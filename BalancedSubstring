@@ -1,0 +1,51 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class BalancedSubstring {
+
+    public static List<String> getBalancedSubstrings(String S) {
+        int n = S.length();
+        int longlen = 0;
+        List<String> longsubstr = new ArrayList<>();
+        HashMap<Character, Integer> count = new HashMap<>();
+        int left = 0;
+
+        for (int right = 0; right < n; right++) {
+            char currentChar = S.charAt(right);
+            count.put(currentChar, count.getOrDefault(currentChar, 0) + 1);
+
+            while (count.size() > 2) {
+                char leftChar = S.charAt(left);
+                count.put(leftChar, count.get(leftChar) - 1);
+                if (count.get(leftChar) == 0) {
+                    count.remove(leftChar);
+                }
+                left++;
+            }
+            if (count.size() == 2) {
+                List<Integer> values = new ArrayList<>(count.values());
+                if (values.get(0).equals(values.get(1))) {
+                    int currentLength = right - left + 1;
+                    String balancedSubstr = S.substring(left, right + 1);
+
+                    if (currentLength > longlen) {
+                        longlen = currentLength;
+                        longsubstr.clear();
+                        longsubstr.add(balancedSubstr);
+                    } else if (currentLength == longlen) {
+                        longsubstr.add(balancedSubstr);
+                    }
+                }
+            }
+        }
+
+        return longsubstr;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getBalancedSubstrings("cabbacc")); 
+        System.out.println(getBalancedSubstrings("abababa")); 
+        System.out.println(getBalancedSubstrings("aaaaaaa"));
+    }
+}
